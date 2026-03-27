@@ -17,20 +17,20 @@ jobs:
 
       - name: Build ROS2 workspace
         run: |
-          docker run --rm \
-            --platform linux/arm64 \
+            docker run --rm \
+            --platform linux/arm/v7 \
             -v ${{ github.workspace }}:/ws \
             ros:humble \
             bash -c "
-              apt update &&
-              apt install -y python3-colcon-common-extensions python3-rosdep &&
-              rosdep init || true &&
-              rosdep update &&
-              cd /ws &&
-              mkdir -p src &&
-              cp -r * src/ 2>/dev/null || true &&
-              rosdep install --from-paths src --ignore-src -y &&
-              colcon build --base-paths src --cmake-args -DBUILD_TESTING=OFF
+                apt update &&
+                apt install -y python3-colcon-common-extensions python3-rosdep &&
+                if [ ! -f /etc/ros/rosdep/sources.list.d/20-default.list ]; then rosdep init; fi &&
+                rosdep update &&
+                cd /ws &&
+                mkdir -p src &&
+                cp -r * src/ 2>/dev/null || true &&
+                rosdep install --from-paths src --ignore-src -y &&
+                colcon build --base-paths src --cmake-args -DBUILD_TESTING=OFF
             "
 
       - name: Upload build
