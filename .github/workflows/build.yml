@@ -18,7 +18,7 @@ jobs:
       - name: Build ROS2 workspace
         run: |
             docker run --rm \
-            --platform linux/arm/v7 \
+            --platform linux/arm64 \
             -v ${{ github.workspace }}:/ws \
             ros:humble \
             bash -c "
