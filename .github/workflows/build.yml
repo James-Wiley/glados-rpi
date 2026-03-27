@@ -27,8 +27,10 @@ jobs:
               rosdep init || true &&
               rosdep update &&
               cd /ws &&
+              mkdir -p src &&
+              cp -r * src/ 2>/dev/null || true &&
               rosdep install --from-paths src --ignore-src -y &&
-              colcon build --cmake-args -DBUILD_TESTING=OFF
+              colcon build --base-paths src --cmake-args -DBUILD_TESTING=OFF
             "
 
       - name: Upload build
