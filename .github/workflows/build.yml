@@ -1,39 +1,42 @@
 name: Build ROS2 (Pi Zero 2 W)
-
 on:
   push:
     branches: [ main ]
   workflow_dispatch:
-
+ 
 jobs:
   build:
     runs-on: ubuntu-22.04
-
     steps:
-      - uses: actions/checkout@v3
-
+      - name: Checkout into src/
+        uses: actions/checkout@v3
+        with:
+          path: src/robot_arm_bringup   # checks out directly into the right place
+ 
       - name: Enable ARM emulation
         uses: docker/setup-qemu-action@v3
-
+ 
       - name: Build ROS2 workspace
         run: |
-            docker run --rm \
+          docker run --rm \
             --platform linux/arm64 \
             -v ${{ github.workspace }}:/ws \
             ros:humble \
             bash -c "
-                apt update &&
-                apt install -y python3-colcon-common-extensions python3-rosdep &&
-                if [ ! -f /etc/ros/rosdep/sources.list.d/20-default.list ]; then rosdep init; fi &&
-                rosdep update &&
-                cd /ws &&
-                mkdir -p src &&
-                cp -r * src/ 2>/dev/null || true &&
-                rosdep install --from-paths src --ignore-src -y &&
-                colcon build --base-paths src --cmake-args -DBUILD_TESTING=OFF
+              apt-get update -q &&
+              apt-get install -y python3-colcon-common-extensions python3-rosdep &&
+              if [ ! -f /etc/ros/rosdep/sources.list.d/20-default.list ]; then
+                rosdep init
+              fi &&
+              rosdep update &&
+              cd /ws &&
+              rosdep install --from-paths src --ignore-src -y &&
+              colcon build \
+                --base-paths src \
+                --cmake-args -DBUILD_TESTING=OFF
             "
-
-      - name: Upload build
+ 
+      - name: Upload install artifact
         uses: actions/upload-artifact@v4
         with:
           name: ros2-install
