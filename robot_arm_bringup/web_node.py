@@ -557,8 +557,8 @@ class WebNode(Node):
             for name, ns in nodes
         ]
         payload = json.dumps({
-            'nodes':  node_list,
-            'servos': self._servo_positions,
+          'nodes':  node_list,
+          'servos': [float(v) for v in self._servo_positions],
         })
         with self._ws_lock:
             dead = set()
