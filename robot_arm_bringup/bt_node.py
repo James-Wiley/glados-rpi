@@ -82,7 +82,7 @@ class BtNode(Node):
     def __init__(self):
         super().__init__('bt_node')
 
-        self.declare_parameter('device_name', 'RobotArm')
+        self.declare_parameter('device_name', 'GLADoS')
         self.declare_parameter('status_interval', STATUS_INTERVAL_S)
 
         self._device_name      = self.get_parameter('device_name').value

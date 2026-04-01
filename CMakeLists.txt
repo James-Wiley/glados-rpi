@@ -19,6 +19,8 @@ install(
     robot_arm_bringup/servo_node.py
     robot_arm_bringup/rgb_led_node.py
     robot_arm_bringup/bt_node.py
+    robot_arm_bringup/sound_node.py
+    robot_arm_bringup/web_node.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
