@@ -3,7 +3,7 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch:
- 
+
 jobs:
   build:
     runs-on: ubuntu-22.04
@@ -12,19 +12,25 @@ jobs:
         uses: actions/checkout@v3
         with:
           path: src/robot_arm_bringup   # checks out directly into the right place
- 
+
       - name: Enable ARM emulation
         uses: docker/setup-qemu-action@v3
- 
+
       - name: Build ROS2 workspace
         run: |
           docker run --rm \
             --platform linux/arm64 \
             -v ${{ github.workspace }}:/ws \
-            ros:humble \
+            ros:humble-ros-base \
             bash -c "
               apt-get update -q &&
-              apt-get install -y python3-colcon-common-extensions python3-rosdep &&
+              apt-get install -y \
+                python3-colcon-common-extensions \
+                python3-rosdep \
+                ros-humble-rosidl-default-generators \
+                ros-humble-rosidl-default-runtime \
+                ros-humble-rcutils \
+                ros-humble-rmw-fastrtps-cpp &&
               if [ ! -f /etc/ros/rosdep/sources.list.d/20-default.list ]; then
                 rosdep init
               fi &&
@@ -35,7 +41,7 @@ jobs:
                 --base-paths src \
                 --cmake-args -DBUILD_TESTING=OFF
             "
- 
+
       - name: Upload install artifact
         uses: actions/upload-artifact@v4
         with:
