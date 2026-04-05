@@ -18,16 +18,16 @@ def generate_launch_description():
         DeclareLaunchArgument('device_name',   default_value='RobotArm'),
 
         # ── Web dashboard node ────────────────────────────────────────
-        Node(
-            package='robot_arm_bringup',
-            executable='web_node.py',
-            name='web_node',
-            output='screen',
-            parameters=[{
-                'host': '0.0.0.0',
-                'port': 8080,
-            }],
-        ),
+        # Node(
+        #     package='robot_arm_bringup',
+        #     executable='web_node.py',
+        #     name='web_node',
+        #     output='screen',
+        #     parameters=[{
+        #         'host': '0.0.0.0',
+        #         'port': 8080,
+        #     }],
+        # ),
 
         # ── Sound node ────────────────────────────────────────────────
         Node(
@@ -38,7 +38,7 @@ def generate_launch_description():
             parameters=[{
                 'sound_init':     '/home/fishbot/sounds/init.wav',
                 'sound_ready':    '/home/fishbot/sounds/ready.wav',
-                'ready_nodes':    '/servo_node,/rgb_led_node,/bt_node,/web_node',
+                'ready_nodes':    '/servo_node,/rgb_led_node,/bt_node',
                 'check_interval': 2.0,
                 'aplay_device':   'default',
             }],
