@@ -244,14 +244,21 @@ class BtNode(Node):
         """Timer callback — push status to BLE notify characteristic."""
         if not (self._server and BLE_AVAILABLE):
             return
+        if not self._loop or not self._loop.is_running():
+            return
         payload = self._make_status_payload().encode()
-        # Schedule on the BLE event loop (thread-safe)
-        asyncio.run_coroutine_threadsafe(
-            self._notify_status(payload), self._loop)
+        try:
+            asyncio.run_coroutine_threadsafe(
+                self._notify_status(payload), self._loop)
+        except Exception as e:
+            self.get_logger().debug(f'Status schedule error: {e}')
 
     async def _notify_status(self, payload: bytes):
         try:
-            self._server.get_characteristic(STATUS_UUID).value = bytearray(payload)
+            char = self._server.get_characteristic(STATUS_UUID)
+            if char is None:
+                return
+            char.value = bytearray(payload)
             await self._server.update_value(SERVICE_UUID, STATUS_UUID)
         except Exception as e:
             self.get_logger().debug(f'Status notify error: {e}')
