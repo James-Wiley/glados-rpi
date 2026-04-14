@@ -237,7 +237,7 @@ class BtNode(Node):
     def _make_status_payload(self) -> str:
         return json.dumps({
             'connected': True,
-            'servos': self._servo_positions,
+            'servos': [float(v) for v in self._servo_positions],
         })
 
     def _publish_status(self):
